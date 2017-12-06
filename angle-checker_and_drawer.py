@@ -1,6 +1,9 @@
 from math import *
+from fontTools.pens.cocoaPen import CocoaPen
+from mojo.UI import UpdateCurrentGlyphView
 
 class AngleChecker():
+    
 
     def __init__(self):    
         self.g = CurrentGlyph()
@@ -38,11 +41,32 @@ class AngleChecker():
                     diff = abs(desAngle - lineAngleAdjusted)
                     if diff < tolerance:
                         print diff, "fine"
+                        self.draw((0,0,1))
                     elif diff < rangeToCheck:
                         print seg.points, diff, "not fine"
+                        self.draw((1,0,0))
                     else:
                         pass
                 prevPoint = seg.points[-1]
             print "\n"
     
+    def draw(self, color):
+        # glyph = notification["glyph"]
+        # scale = notification["scale"]
+        width = 10
+        lineCap = "round"
+        lineJoin = "round"
+        
+        #path = glyph.naked().getRepresentation("defconAppKit.NSBezierPath")       
+        pen = CocoaPen(self.g.getParent())
+        self.g.draw(pen)
+        path = pen.path
+        
+        path.setLineWidth_(width)
+        path.setLineCapStyle_(lineCap)
+        path.setLineJoinStyle_(lineJoin)
+        
+        color.set()
+        path.stroke()
 AngleChecker().checkAngles()
+# AngleChecker().draw()
