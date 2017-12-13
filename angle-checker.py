@@ -34,6 +34,9 @@ class AngleChecker():
         addObserver(self, "myDrawCallback", "draw")
         addObserver(self, "myDrawCallback", "drawInactive")
         addObserver(self, "myDrawCallback", "spaceCenterDraw")
+        # addObserver(self, "myDrawCallback", "currentGlyphChanged")
+        addObserver(self, "myDrawCallback", "viewDidChangeGlyph")
+        
         UpdateCurrentGlyphView()
         
         self.g = CurrentGlyph()
@@ -50,6 +53,8 @@ class AngleChecker():
         removeObserver(self, "draw")
         removeObserver(self, "drawInactive")
         removeObserver(self, "spaceCenterDraw")
+        # removeObserver(self, "currentGlyphChanged")
+        removeObserver(self, "viewDidChangeGlyph")
         UpdateCurrentGlyphView()
         # super(SimpleWindowObserver, self).windowCloseCallback(sender)
         # self.g.update()
@@ -110,6 +115,7 @@ class AngleChecker():
             stroke(0,1,.5,.5)
             strokeWidth(4)
             line(angle[0], angle[1],angle[2],angle[3])
+        UpdateCurrentGlyphView()
 
 
 # AngleChecker().checkAngles()
