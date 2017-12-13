@@ -94,7 +94,7 @@ class AngleChecker():
             
             
     def myDrawCallback(self, notification):
-        self.refreshCanvas()
+        # self.refreshCanvas()
         self.checkAngles()
         glyph = notification["glyph"]
         # # scale = notification["scale"]
@@ -102,7 +102,7 @@ class AngleChecker():
         lineCap("round")
                 
         for angle in self.badAngles:
-            stroke(1,0,0,.25)
+            stroke(1,0,0,.5)
             strokeWidth(6)
             line(angle[0], angle[1],angle[2],angle[3])
             
