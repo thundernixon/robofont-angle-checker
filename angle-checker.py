@@ -18,11 +18,11 @@ class AngleChecker():
         self.w = FloatingWindow((350, 110), "Angle Checker")
         y = 10
         self.w.desiredAngleText = TextBox((10, y, 140, 22), "Desired Angle:", alignment="right")
-        self.w.desiredAngle = SliderEditIntStepper((160, y, -10, 22), 16.5, callback=self.changedCallback, minValue=0, maxValue=180)
+        self.w.desiredAngle = SliderEditIntStepper((160, y, -10, 22), 17, callback=self.changedCallback, minValue=0, maxValue=180)
         
         y += 30
         self.w.toleranceText = TextBox((10, y, 140, 22), "Tolerance +/-:", alignment="right")
-        self.w.tolerance = SliderEditIntStepper((160, y, -10, 22), 1.5, callback=self.changedCallback, minValue=0, maxValue=15)
+        self.w.tolerance = SliderEditIntStepper((160, y, -10, 22), 1, callback=self.changedCallback, minValue=0, maxValue=15)
         
         y += 30
         self.w.rangeToCheckText = TextBox((10, y, 140, 22), "Range to check +/-:", alignment="right")
@@ -34,7 +34,6 @@ class AngleChecker():
         addObserver(self, "myDrawCallback", "draw")
         addObserver(self, "myDrawCallback", "drawInactive")
         addObserver(self, "myDrawCallback", "spaceCenterDraw")
-        # addObserver(self, "myDrawCallback", "currentGlyphChanged")
         addObserver(self, "myDrawCallback", "viewDidChangeGlyph")
         
         UpdateCurrentGlyphView()
@@ -53,11 +52,8 @@ class AngleChecker():
         removeObserver(self, "draw")
         removeObserver(self, "drawInactive")
         removeObserver(self, "spaceCenterDraw")
-        # removeObserver(self, "currentGlyphChanged")
         removeObserver(self, "viewDidChangeGlyph")
         UpdateCurrentGlyphView()
-        # super(SimpleWindowObserver, self).windowCloseCallback(sender)
-        # self.g.update()
 
     def checkAngles(self):
         self.badAngles = []
@@ -101,7 +97,7 @@ class AngleChecker():
     def myDrawCallback(self, notification):
         # self.refreshCanvas()
         self.checkAngles()
-        glyph = notification["glyph"]
+        self.g = notification["glyph"]
         # # scale = notification["scale"]
 
         lineCap("round")
@@ -117,7 +113,4 @@ class AngleChecker():
             line(angle[0], angle[1],angle[2],angle[3])
         UpdateCurrentGlyphView()
 
-
-# AngleChecker().checkAngles()
 AngleChecker()
-# AngleChecker().myDrawCallback()
