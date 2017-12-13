@@ -15,7 +15,7 @@ class AngleChecker():
 
     def __init__(self):    
         
-        self.w = FloatingWindow((350, 130), "Angle Checker")
+        self.w = FloatingWindow((350, 110), "Angle Checker")
         y = 10
         self.w.desiredAngleText = TextBox((10, y, 140, 22), "Desired Angle:", alignment="right")
         self.w.desiredAngle = SliderEditIntStepper((160, y, -10, 22), 16.5, callback=self.changedCallback, minValue=0, maxValue=180)
