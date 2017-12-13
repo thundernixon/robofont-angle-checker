@@ -1,6 +1,5 @@
 from AppKit import *
 from vanilla import *
-# import vanilla
 from defconAppKit.windows.baseWindow import BaseWindowController
 
 from lib.UI.stepper import SliderEditIntStepper
@@ -67,18 +66,12 @@ class AngleChecker():
                     x2, y2 = currentPoint.x, currentPoint.y
                     dx, dy = x2 - x1, y2 - y1
             
-                    # lineAngle = abs(degrees(atan2(dy, dx)) + 90)
-            
                     lineAngle = round(degrees(atan2(dy, dx)),2)
-                    # # if lineAngle < 0:
-                    # #     lineAngle += 90
             
                     if lineAngle <= 0:
                         lineAngleAdjusted = abs(lineAngle + 90)
                     elif lineAngle > 0:
                         lineAngleAdjusted = abs(lineAngle - 90)
-            
-                    # print x1, ",", y1, "|", x2, ",", y2, "|", "line angle:", lineAngle, "| line angle adj:", lineAngleAdjusted
                         
             
                     #### simplify the math with this
@@ -98,14 +91,7 @@ class AngleChecker():
                     else:
                         pass
                 prevPoint = seg.points[-1]
-            # print "\n"
-            # print self.badAngles
-            # self.myDrawCallback(self)
             
-    def refreshCanvas(self):
-        pass
-        # removeObserver(self, "draw")
-        # addObserver(self, "myDrawCallback", "draw")
             
     def myDrawCallback(self, notification):
         self.refreshCanvas()
