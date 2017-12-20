@@ -33,7 +33,7 @@ class AngleChecker():
         self.w.bind("close", self.windowCloseCallback)
         addObserver(self, "myDrawCallback", "draw")
         addObserver(self, "myDrawCallback", "drawInactive")
-        addObserver(self, "myDrawCallback", "spaceCenterDraw")
+        # addObserver(self, "myDrawCallback", "spaceCenterDraw")
         addObserver(self, "myDrawCallback", "viewDidChangeGlyph")
         
         UpdateCurrentGlyphView()
@@ -51,7 +51,7 @@ class AngleChecker():
     def windowCloseCallback(self, sender):
         removeObserver(self, "draw")
         removeObserver(self, "drawInactive")
-        removeObserver(self, "spaceCenterDraw")
+        # removeObserver(self, "spaceCenterDraw")
         removeObserver(self, "viewDidChangeGlyph")
         UpdateCurrentGlyphView()
 
@@ -92,6 +92,18 @@ class AngleChecker():
                     else:
                         pass
                 prevPoint = seg.points[-1]
+                
+    def getAngleValue(self, x1, y1, x2, y2):
+        # print angle[0], angle[1],angle[2],angle[3]
+        # dx, dy = angle[2] - angle[0], angle[3] - angle[1] 
+        dx, dy = x2 - x1, y2 - y1
+        lineAngle = round(degrees(atan2(dy, dx)),2)
+        if lineAngle <= 0:
+            lineAngleAdjusted = abs(lineAngle + 90)
+        elif lineAngle > 0:
+            lineAngleAdjusted = abs(lineAngle - 90)
+        print "lineAngleAdjusted is ", lineAngleAdjusted
+        return lineAngleAdjusted
             
             
     def myDrawCallback(self, notification):
@@ -106,21 +118,24 @@ class AngleChecker():
         for angle in self.badAngles:
             
             ##### TO DO: this and the angle calculation in the function above should be made into a single angle function         
-            print angle[0], angle[1],angle[2],angle[3]
-            dx, dy = angle[2] - angle[0], angle[3] - angle[1] 
-            lineAngle = round(degrees(atan2(dy, dx)),2)
-            if lineAngle <= 0:
-                lineAngleAdjusted = abs(lineAngle + 90)
-            elif lineAngle > 0:
-                lineAngleAdjusted = abs(lineAngle - 90)
-            print "lineAngleAdjusted is ", lineAngleAdjusted
+            # print angle[0], angle[1],angle[2],angle[3]
+            # dx, dy = angle[2] - angle[0], angle[3] - angle[1] 
+            # lineAngle = round(degrees(atan2(dy, dx)),2)
+            # if lineAngle <= 0:
+            #     lineAngleAdjusted = abs(lineAngle + 90)
+            # elif lineAngle > 0:
+            #     lineAngleAdjusted = abs(lineAngle - 90)
+            # print "lineAngleAdjusted is ", lineAngleAdjusted
             ####
-                        
+            
+            
+            
             stroke(1,0,0,.5)
             strokeWidth(6)
             line(angle[0], angle[1],angle[2],angle[3])
             # angleText = 
             # print lineAngle
+            lineAngleAdjusted = self.getAngleValue(angle[0], angle[1],angle[2],angle[3])
             textX, textY = angle[0] + 15, angle[1] + 15
             txt = str(lineAngleAdjusted) + "°".decode('utf-8')
             fontSize(12)
@@ -130,6 +145,12 @@ class AngleChecker():
             stroke(0,1,.5,.5)
             strokeWidth(4)
             line(angle[0], angle[1],angle[2],angle[3])
+            
+            lineAngleAdjusted = self.getAngleValue(angle[0], angle[1],angle[2],angle[3])
+            textX, textY = angle[0] + 15, angle[1] + 15
+            txt = str(lineAngleAdjusted) + "°".decode('utf-8')
+            fontSize(12)
+            text(txt, (textX, textY))
             
         
         # UpdateCurrentGlyphView()
