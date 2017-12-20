@@ -99,9 +99,10 @@ class AngleChecker():
         self.checkAngles()
         self.g = notification["glyph"]
         # # scale = notification["scale"]
+        print self.g
 
         lineCap("round")
-                
+            
         for angle in self.badAngles:
             stroke(1,0,0,.5)
             strokeWidth(6)
@@ -111,6 +112,8 @@ class AngleChecker():
             stroke(0,1,.5,.5)
             strokeWidth(4)
             line(angle[0], angle[1],angle[2],angle[3])
-        UpdateCurrentGlyphView()
+            
+        
+        # UpdateCurrentGlyphView()
 
 AngleChecker()
