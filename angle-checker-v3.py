@@ -67,16 +67,10 @@ class AngleChecker():
                     # print "prevPoint is ", prevPoint, "currentPoint is ", currentPoint
                     x1, y1 = prevPoint.x, prevPoint.y
                     x2, y2 = currentPoint.x, currentPoint.y
-                    dx, dy = x2 - x1, y2 - y1
-            
-                    lineAngle = round(degrees(atan2(dy, dx)),2)
-            
-                    if lineAngle <= 0:
-                        lineAngleAdjusted = abs(lineAngle + 90)
-                    elif lineAngle > 0:
-                        lineAngleAdjusted = abs(lineAngle - 90)
-            
-                    #### simplify the math with this
+                    
+                    lineAngleAdjusted = self.getAngleValue(x1, y1, x2, y2)
+                    print lineAngleAdjusted
+                    
                     tolerance = self.w.tolerance.get()
                     rangeToCheck = self.w.rangeToCheck.get()
                     desAngle = self.w.desiredAngle.get()
@@ -95,8 +89,6 @@ class AngleChecker():
                 prevPoint = seg.points[-1]
                 
     def getAngleValue(self, x1, y1, x2, y2):
-        # print angle[0], angle[1],angle[2],angle[3]
-        # dx, dy = angle[2] - angle[0], angle[3] - angle[1] 
         dx, dy = x2 - x1, y2 - y1
         lineAngle = round(degrees(atan2(dy, dx)),2)
         if lineAngle <= 0:
