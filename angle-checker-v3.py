@@ -15,7 +15,7 @@ class AngleChecker():
 
     def __init__(self):    
         
-        self.w = FloatingWindow((350, 110), "Angle Checker")
+        self.w = FloatingWindow((380, 140), "Angle Checker")
         y = 10
         self.w.desiredAngleText = TextBox((10, y, 140, 22), "Desired Angle:", alignment="right")
         self.w.desiredAngle = SliderEditIntStepper((160, y, -10, 22), 15.5, callback=self.changedCallback, minValue=0, maxValue=180)
@@ -28,19 +28,29 @@ class AngleChecker():
         self.w.rangeToCheckText = TextBox((10, y, 140, 22), "Range to check +/-:", alignment="right")
         self.w.rangeToCheck = SliderEditIntStepper((160, y, -10, 22), 12, callback=self.changedCallback, minValue=0, maxValue=45)
         
+        y += 30
+        self.w.layerNameText = TextBox((10, y, 140, 22), "Current layer name:", alignment="right")
+        self.w.layerName = TextEditor((160, y, -10, 22), "foreground")
+        
         # self.setUpBaseWindowBehavior()
+        self.g = CurrentGlyph()
+        
         self.w.open()
         self.w.bind("close", self.windowCloseCallback)
         addObserver(self, "myDrawCallback", "draw")
         addObserver(self, "myDrawCallback", "drawInactive")
+        # self.g.addObserver(self, "myDrawCallback", "Glyph.Changed")
+
         # addObserver(self, "myDrawCallback", "spaceCenterDraw")
         addObserver(self, "myDrawCallback", "viewDidChangeGlyph")
         
         UpdateCurrentGlyphView()
         
-        self.g = CurrentGlyph()
+        
         # self.badAngles = []
         # self.goodAngles = []
+        
+        self.timesFired = 0
                 
     def changedCallback(self, sender):
         UpdateCurrentGlyphView()
@@ -51,6 +61,7 @@ class AngleChecker():
     def windowCloseCallback(self, sender):
         removeObserver(self, "draw")
         removeObserver(self, "drawInactive")
+        # self.g.removeObserver(self, "Glyph.Changed")
         # removeObserver(self, "spaceCenterDraw")
         removeObserver(self, "viewDidChangeGlyph")
         UpdateCurrentGlyphView()
@@ -58,7 +69,9 @@ class AngleChecker():
     def checkAngles(self):
         self.badAngles = []
         self.goodAngles = []
-        for contour in self.g:
+        self.layerName = self.w.layerName.get()
+        for contour in self.g.getLayer(self.layerName):
+        # for contour in self.g:
             # print "\n"
             prevPoint = contour[-1].points[-1]
             for seg in contour:
@@ -69,7 +82,7 @@ class AngleChecker():
                     x2, y2 = currentPoint.x, currentPoint.y
                     
                     lineAngleAdjusted = self.getAngleValue(x1, y1, x2, y2)
-                    print lineAngleAdjusted
+                    # print lineAngleAdjusted
                     
                     tolerance = self.w.tolerance.get()
                     rangeToCheck = self.w.rangeToCheck.get()
@@ -95,56 +108,54 @@ class AngleChecker():
             lineAngleAdjusted = abs(lineAngle + 90)
         elif lineAngle > 0:
             lineAngleAdjusted = abs(lineAngle - 90)
-        print "lineAngleAdjusted is ", lineAngleAdjusted
+        # print "lineAngleAdjusted is ", lineAngleAdjusted
         return lineAngleAdjusted
-            
+        
+    def getAngleDist(self, x1, y1, x2, y2):
+        dist = round(sqrt((x2 - x1)**2 + (y2 - y1)**2),2)
+        return dist
+          
+    def writeText(self, x1, y1,x2,y2):
+        # stroke(1,0,0,.5)
+        strokeWidth(6)
+        line(x1, y1,x2,y2)
+
+        lineAngleAdjusted = self.getAngleValue(x1, y1,x2,y2)
+        txt = "∡".decode('utf-8') + str(lineAngleAdjusted) + "°".decode('utf-8')
+        
+        
+        
+        textX, textY = x1 + 15, y1 + 15
+        fontSize(12)
+        text(txt, (textX, textY))
+        
+        
+        lineDist = "⤢".decode('utf-8') +  str(self.getAngleDist(x1, y1,x2,y2))
+        strokeWidth(0)
+        text(lineDist, (textX + 50, textY))
             
     def myDrawCallback(self, notification):
         # self.refreshCanvas()
+        # self.g.saveGraphicsState()
         self.checkAngles()
         self.g = notification["glyph"]
+        # self.g = notification
         # # scale = notification["scale"]
         print self.g
+        
+        # self.timesFired += 1
+        
+        # print self.timesFired
 
         lineCap("round")
         
-        for angle in self.badAngles:
-            
-            ##### TO DO: this and the angle calculation in the function above should be made into a single angle function         
-            # print angle[0], angle[1],angle[2],angle[3]
-            # dx, dy = angle[2] - angle[0], angle[3] - angle[1] 
-            # lineAngle = round(degrees(atan2(dy, dx)),2)
-            # if lineAngle <= 0:
-            #     lineAngleAdjusted = abs(lineAngle + 90)
-            # elif lineAngle > 0:
-            #     lineAngleAdjusted = abs(lineAngle - 90)
-            # print "lineAngleAdjusted is ", lineAngleAdjusted
-            ####
-            
-            
-            
+        for coordinate in self.badAngles:            
             stroke(1,0,0,.5)
-            strokeWidth(6)
-            line(angle[0], angle[1],angle[2],angle[3])
-            # angleText = 
-            # print lineAngle
-            lineAngleAdjusted = self.getAngleValue(angle[0], angle[1],angle[2],angle[3])
-            textX, textY = angle[0] + 15, angle[1] + 15
-            txt = str(lineAngleAdjusted) + "°".decode('utf-8')
-            fontSize(12)
-            text(txt, (textX, textY))
+            self.writeText(coordinate[0], coordinate[1],coordinate[2],coordinate[3])
             
-        for angle in self.goodAngles:
+        for coordinate in self.goodAngles:
             stroke(0,1,.5,.5)
-            strokeWidth(4)
-            line(angle[0], angle[1],angle[2],angle[3])
-            
-            lineAngleAdjusted = self.getAngleValue(angle[0], angle[1],angle[2],angle[3])
-            textX, textY = angle[0] + 15, angle[1] + 15
-            txt = str(lineAngleAdjusted) + "°".decode('utf-8')
-            fontSize(12)
-            text(txt, (textX, textY))
-            
+            self.writeText(coordinate[0], coordinate[1],coordinate[2],coordinate[3])
         
         # UpdateCurrentGlyphView()
 
