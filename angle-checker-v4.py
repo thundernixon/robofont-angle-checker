@@ -28,9 +28,9 @@ class AngleChecker():
         self.w.rangeToCheckText = TextBox((10, y, 140, 22), "Range to check +/-:", alignment="right")
         self.w.rangeToCheck = SliderEditIntStepper((160, y, -10, 22), 12, callback=self.changedCallback, minValue=0, maxValue=45)
         
-        y += 30
-        self.w.layerNameText = TextBox((10, y, 140, 22), "Current layer name:", alignment="right")
-        self.w.layerName = TextEditor((160, y, -10, 22), "foreground")
+        # y += 30
+        # self.w.layerNameText = TextBox((10, y, 140, 22), "Current layer name:", alignment="right")
+        # self.w.layerName = TextEditor((160, y, -10, 22), "foreground")
         
         # self.setUpBaseWindowBehavior()
         self.g = CurrentGlyph()
@@ -135,14 +135,12 @@ class AngleChecker():
         lineDist = "⤢".decode('utf-8') +  str(self.getAngleDist(x1, y1,x2,y2))
         strokeWidth(0)
         text(lineDist, (textX + 50, textY))
-            
-    def myDrawCallback(self, notification):
-        # self.refreshCanvas()
-        # self.g.saveGraphicsState()
-        self.g = notification["glyph"]
+        
+    def computeAndDraw(self, info):
+        print(info)
+        self.g = info["glyph"]
         self.checkAngles()
-        # self.g = notification
-        # # scale = notification["scale"]
+        
         print self.g
         
         self.timesFired += 1
@@ -159,13 +157,24 @@ class AngleChecker():
             stroke(0,1,.5,.5)
             self.writeText(coordinate[0], coordinate[1],coordinate[2],coordinate[3])
         
+            
+    def myDrawCallback(self, info):
+        # self.refreshCanvas()
+        # self.g.saveGraphicsState()
+        
         # UpdateCurrentGlyphView()
+        
+        print("event")
 
     def glyphViewChangedCallback(self, info):
         print "glyph changed"
+        self.computeAndDraw(info)
         
     def glyphDataChangedCallback(self, info):
         print "glyph data changed"
+        print info
+        self.computeAndDraw(info)
+        
 
 
 AngleChecker()
